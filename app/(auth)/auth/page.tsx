@@ -7,7 +7,7 @@ import Button from '@mui/material/Button';
 
 import { isValidEmail, isStrongPassword } from "@/app/lib/auth";
 
-export default function AuthPage() {
+const AuthPage = () => {
 
   const searchParams = useSearchParams();
   const rawMode = searchParams.get("mode");
@@ -119,3 +119,5 @@ export default function AuthPage() {
     </div>
   );
 }
+
+export default AuthPage;

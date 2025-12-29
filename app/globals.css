@@ -95,6 +95,12 @@ body {
   color: var(--alabaster-grey) !important;
 }
 
+.LogoutBtn{
+  background-color: var(--old-gold) !important;
+  color: var(--alabaster-grey) !important;
+  padding: 0 20px !important;
+}
+
 .phrase{
   color: var(--evergreen);
   font-style: oblique;

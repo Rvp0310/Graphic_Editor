@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import "./globals.css";  // how tf is this not found but is executing alright
+import "@/app/globals.css";  // how tf is this not found but is executing alright
 import { AuthProvider } from "./context/AuthContext";
 
 export const metadata: Metadata = {
@@ -17,9 +17,9 @@ export default function RootLayout({
       <body
         className={`antialiased`}
       >
-        <AuthProvider>
-          {children}
-        </AuthProvider>
+          <AuthProvider>
+            {children}
+          </AuthProvider>
       </body>
     </html>
   );

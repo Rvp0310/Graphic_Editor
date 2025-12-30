@@ -1,5 +1,3 @@
-"use client"
-
 import NavBar from "../components/NavBar";
 
 export default function PublicLayout({
@@ -13,7 +11,7 @@ export default function PublicLayout({
         className={`antialiased`}
       >
         <NavBar />
-        <main className="pl-[10px] pr-[10px]">
+        <main className="mt-[70px] pl-[10px] pr-[10px]">
           {children}
         </main>
       </body>

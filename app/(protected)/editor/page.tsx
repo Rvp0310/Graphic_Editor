@@ -1,7 +1,8 @@
 "use client"
 
+import ShapeFormatPannel from '@/app/components/ShapeFormatPannel';
 import WhiteboardEditMenu from '@/app/components/WhiteboardEditMenu'
-import { Canvas } from 'fabric';
+import { Canvas, Rect } from 'fabric';
 import React, {Ref, useEffect, useRef, useState} from 'react'
 
 const Whiteboard = () => {
@@ -21,10 +22,25 @@ const Whiteboard = () => {
     const fc = new Canvas(canvasRef.current, {
       width: clientWidth,
       heigt: clientHeight,
+      selection: true,
       backgroundColor: '#fff'
     });
 
     setCanvas(fc);
+
+    const bg = new Rect({
+      left: 0,
+      top: 0,
+      width: clientWidth,
+      height: clientHeight,
+      fill: 'transparent',
+      selectable: false,
+      evented: true,
+    });
+
+    fc.add(bg);
+    // fc.sendToBack(bg);
+
 
     return () => {
       fc.dispose()
@@ -32,10 +48,13 @@ const Whiteboard = () => {
   }, [])
 
   return (
+    <>
     <div id = "whiteboardCanvas" ref={containerRef}>
       <canvas ref={canvasRef} />
       {canvas && <WhiteboardEditMenu canvas = {canvas}/>}
     </div>
+    <ShapeFormatPannel/>
+    </>
   )
 }
 

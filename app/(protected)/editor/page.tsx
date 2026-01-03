@@ -1,13 +1,15 @@
 "use client"
 
 import ShapeFormatPannel from '@/app/components/ShapeFormatPannel';
+import TextFormatPannel from '@/app/components/TextFormatPannel';
 import WhiteboardEditMenu from '@/app/components/WhiteboardEditMenu'
 import { Canvas, Rect } from 'fabric';
-import React, {Ref, useEffect, useRef, useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 
 const Whiteboard = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const [selectedObject, setSelectedObject] = useState<any>(null);
   const [canvas, setCanvas] = useState<null|Canvas>(null);
 
   useEffect(() => {
@@ -21,7 +23,7 @@ const Whiteboard = () => {
 
     const fc = new Canvas(canvasRef.current, {
       width: clientWidth,
-      heigt: clientHeight,
+      height: clientHeight,
       selection: true,
       backgroundColor: '#fff'
     });
@@ -35,17 +37,37 @@ const Whiteboard = () => {
       height: clientHeight,
       fill: 'transparent',
       selectable: false,
-      evented: true,
+      evented: false,
     });
 
     fc.add(bg);
-    // fc.sendToBack(bg);
+    fc.sendObjectToBack(bg);
+    
+    fc.on("selection:created", (e: any) => {
+      const obj = e.selected?.[0];
+      console.log("TYPE:", obj?.type);
+      console.log(isText);
+      setSelectedObject(e.selected?.[0] || null);
+    });
 
+    fc.on("selection:updated", (e: any) => {
+      setSelectedObject(e.selected?.[0] || null);
+    });
+
+    fc.on("selection:cleared", () => {
+      setSelectedObject(null);
+    });
 
     return () => {
       fc.dispose()
     }
-  }, [])
+  }, []);
+
+  const isText =
+  selectedObject?.type === "i-text" ||
+  selectedObject?.type === "textbox" ||
+  selectedObject?.type === "text";
+
 
   return (
     <>
@@ -53,7 +75,9 @@ const Whiteboard = () => {
       <canvas ref={canvasRef} />
       {canvas && <WhiteboardEditMenu canvas = {canvas}/>}
     </div>
-    <ShapeFormatPannel/>
+    {
+      selectedObject && (isText ? <TextFormatPannel/> : <ShapeFormatPannel/>)
+    }
     </>
   )
 }

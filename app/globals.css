@@ -233,11 +233,11 @@ body {
   justify-content: center;
 }
 
-#whiteboardCanvas{
-  position: fixed;
+#whiteboardCanvas canvas{
+  position: relative;
   inset: 0;
-  width: 100% !important;
-  height: 100% !important;
+  width: 100vw !important;
+  height: 100vh !important;
   display: block;
   z-index: 1;
 }
@@ -249,4 +249,55 @@ body {
 
 .shapePannel{
   z-index: 1100;
+}
+
+.setting{
+  background-color: var(--graphite);
+  color: var(--snow);
+}
+
+.input{
+  width: 2rem;
+  height: 2rem;
+  font-size: 0.8rem;
+  margin: 3px;
+}
+
+.inputGroup{
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.setting{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  right: 2em;
+  background-color: var(--graphite);
+  font-size: 0.7rem;
+  color: var(--snow);
+  width: 15em;
+  height: 55%;
+  border-radius: 4px;
+  padding: 3em 2em;
+}
+
+.algnLabel{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.PannelSection{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.PannelSection h5{
+  color: var(--pearl-beige) !important;
+  margin: 2px 0;
 }

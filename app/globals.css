@@ -247,17 +247,8 @@ body {
   height: 100%;
 }
 
-.shapePannel{
-  z-index: 1100;
-}
-
-.setting{
-  background-color: var(--graphite);
-  color: var(--snow);
-}
-
 .input{
-  width: 2rem;
+  width: 3rem;
   height: 2rem;
   font-size: 0.8rem;
   margin: 3px;
@@ -273,15 +264,16 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  position: absolute;
+  position: fixed;
   right: 2em;
   background-color: var(--graphite);
   font-size: 0.7rem;
   color: var(--snow);
-  width: 15em;
+  width: 25em;
   height: 55%;
   border-radius: 4px;
   padding: 3em 2em;
+  z-index: 1100;
 }
 
 .algnLabel{

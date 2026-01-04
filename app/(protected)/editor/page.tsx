@@ -3,14 +3,19 @@
 import ShapeFormatPannel from '@/app/components/ShapeFormatPannel';
 import TextFormatPannel from '@/app/components/TextFormatPannel';
 import WhiteboardEditMenu from '@/app/components/WhiteboardEditMenu'
-import { Canvas, Rect } from 'fabric';
+import { Canvas, Rect, FabricObject } from 'fabric';
 import React, {useEffect, useRef, useState} from 'react'
 
 const Whiteboard = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const [selectedObject, setSelectedObject] = useState<any>(null);
+  const [selectedObject, setSelectedObject] = useState<FabricObject | null>(null);
   const [canvas, setCanvas] = useState<null|Canvas>(null);
+
+  const isText = (obj: any) =>
+      obj?.type === "i-text" ||
+      obj?.type === "textbox" ||
+      obj?.type === "text";
 
   useEffect(() => {
     if(!canvasRef.current || !containerRef.current)
@@ -46,7 +51,7 @@ const Whiteboard = () => {
     fc.on("selection:created", (e: any) => {
       const obj = e.selected?.[0];
       console.log("TYPE:", obj?.type);
-      console.log(isText);
+      console.log("isText:", isText(obj));
       setSelectedObject(e.selected?.[0] || null);
     });
 
@@ -58,26 +63,33 @@ const Whiteboard = () => {
       setSelectedObject(null);
     });
 
+    fc.on('object:modified', (e: any) => {
+      const obj = e.target as FabricObject | undefined;
+      if (!obj) return;
+
+      setSelectedObject(obj);
+    });
+
+    fc.on('object:scaling', (e: any) => {
+      const obj = e.target;
+      if (!obj) return;
+      setSelectedObject(obj);
+    });
+
     return () => {
       fc.dispose()
     }
   }, []);
 
-  const isText =
-  selectedObject?.type === "i-text" ||
-  selectedObject?.type === "textbox" ||
-  selectedObject?.type === "text";
-
-
   return (
     <>
+    {
+      selectedObject && (isText(selectedObject) ? <TextFormatPannel/> : <ShapeFormatPannel selectedObject = {selectedObject} canvas = {canvas} />)
+    }
     <div id = "whiteboardCanvas" ref={containerRef}>
       <canvas ref={canvasRef} />
       {canvas && <WhiteboardEditMenu canvas = {canvas}/>}
     </div>
-    {
-      selectedObject && (isText ? <TextFormatPannel/> : <ShapeFormatPannel/>)
-    }
     </>
   )
 }

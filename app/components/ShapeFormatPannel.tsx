@@ -1,14 +1,92 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import Rotate90DegreesCcwIcon from '@mui/icons-material/Rotate90DegreesCcw';
 import Rotate90DegreesCwIcon from '@mui/icons-material/Rotate90DegreesCw';
 import FlipIcon from '@mui/icons-material/Flip';
 import FlipToBackIcon from '@mui/icons-material/FlipToBack';
 import FlipToFrontIcon from '@mui/icons-material/FlipToFront';
 import IconButton from '@mui/material/IconButton';
+import { Canvas, FabricObject, Rect } from 'fabric';
 
-const ShapeFormatPannel: React.FC = () => {
+const ShapeFormatPannel = ({selectedObject, canvas}: { selectedObject: FabricObject; canvas: Canvas | null; }) => {
+  if (!selectedObject || !canvas) return null;
+  
+  const [strokeWidth, setStrokeWidth] = useState(1);
+  const [fillColor, setFillColor] = useState('#14116b');
+  const [borderColor, setBorderColor] = useState('#000');
+  const [borderRad, setBorderRad] = useState(0);
+  const [width, setWidth] = useState(1);
+  const [height, setHeight] = useState(1);
+
+  useEffect(() => {
+    if (!selectedObject) return;
+
+    setStrokeWidth(selectedObject.strokeWidth || 1);
+    setFillColor((selectedObject.fill as string) || '#14116b');
+    setBorderColor((selectedObject.stroke as string) || '#000');
+    setWidth(Math.round(selectedObject.getScaledWidth()));
+    setHeight(Math.round(selectedObject.getScaledHeight()));
+
+    if (selectedObject.type === 'rect') {
+      const rect = selectedObject as Rect;
+      setBorderRad(rect.rx || 0);
+    } else {
+      setBorderRad(0);
+    }
+  }, [selectedObject]);
+
+
+  const isRect = (obj: any): obj is Rect => obj?.type === "rect";
+
+  const borderRadius = isRect(selectedObject) ? selectedObject.rx || 0 : 0;
+
+  const handleWidthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newWidth = Number(e.target.value);
+    const scaleX = newWidth / selectedObject.getScaledWidth();
+    selectedObject.scaleX *= scaleX;
+    setWidth(newWidth);
+    canvas.requestRenderAll();
+  }
+
+  const handleHeightChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newHeight = Number(e.target.value);
+    const scaleY = newHeight / selectedObject.getScaledHeight();
+    selectedObject.scaleY *= scaleY;
+    setHeight(newHeight);
+    canvas.requestRenderAll();
+  }
+  
+  const handleFillChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFillColor(e.target.value);
+    selectedObject.set({fill: e.target.value});
+    canvas.renderAll();
+  }
+
+  const handleBorderFill = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setBorderColor(e.target.value);
+    selectedObject.set({stroke: e.target.value});
+    canvas.renderAll();
+  }
+
+  const handleBorderWidth = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setStrokeWidth(+e.target.value);
+    selectedObject.set({strokeWidth: +e.target.value});
+    canvas.renderAll();
+  }
+
+  const handleBorderRadius = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const percent = Number(e.target.value);
+    const maxRadius = Math.min(
+      selectedObject.getScaledWidth(),
+      selectedObject.getScaledHeight()
+    ) / 2;
+    const radiusPx = (percent / 50) * maxRadius;
+    setBorderRad(percent);
+    selectedObject.set({rx: radiusPx, ry: radiusPx});
+    canvas.renderAll();
+  }
+  
   return (
-    <div className="ShapePannel setting">
+    <div className="setting">
       <div className="PannelSection">
         <h5>Background</h5>
         <div className="algnLabel">
@@ -19,7 +97,8 @@ const ShapeFormatPannel: React.FC = () => {
           type="color"
           className="form-control form-control-color input"
           id="backgroundColorInput"
-          defaultValue="#563d7c"
+          value={fillColor}
+          onChange={handleFillChange}
           title="Choose your color"
         />
         </div> {/* opacity included */}
@@ -36,12 +115,30 @@ const ShapeFormatPannel: React.FC = () => {
           type="color"
           className="form-control form-control-color input"
           id="borderColorInput"
-          defaultValue="#563d7c"
+          value={borderColor}
+          onChange={handleBorderFill}
           title="Choose your color"
         /></div>
+        {
+          isRect(selectedObject) &&
+          <div className="algnLabel">
+          <label htmlFor="borderRadiusInput" className="form-label">
+            Radius (%)
+          </label>
+          <input
+            type="number"
+            id="borderRadiusInput"
+            className="input"
+            min={0}
+            max={50}
+            value={borderRad}
+            onChange={handleBorderRadius}
+          />
+          </div>
+        }
         <div className="algnLabel">
         <label htmlFor="borderRadiusInput" className="form-label">
-          Radius (%)
+          Width
         </label>
         <input
           type="number"
@@ -49,8 +146,10 @@ const ShapeFormatPannel: React.FC = () => {
           className="input"
           min={0}
           max={50}
-          defaultValue={0}
-        /></div>
+          value={strokeWidth}
+          onChange={handleBorderWidth}
+        />
+        </div>
         </div>
       </div>
 
@@ -65,9 +164,9 @@ const ShapeFormatPannel: React.FC = () => {
             type="number"
             id="borderRadiusInput"
             className="input"
-            min={0}
-            max={100}
-            defaultValue={0}
+            min={1}
+            value={width}
+            onChange={handleWidthChange}
           />
         </div>
         <div className="algnLabel">
@@ -78,9 +177,9 @@ const ShapeFormatPannel: React.FC = () => {
           type="number"
           id="borderRadiusInput"
           className="input"
-          min={0}
-          max={100}
-          defaultValue={0}
+          min={1}
+          value={height}
+          onChange={handleHeightChange}
         />
         </div>
         </div>
@@ -95,12 +194,14 @@ const ShapeFormatPannel: React.FC = () => {
         <IconButton>
           <Rotate90DegreesCwIcon sx={{color: 'white'}}/>
         </IconButton>
+        {/* coming soon
         <IconButton>
           <FlipIcon sx={{color: 'white'}}/>
         </IconButton>
         <IconButton>
           <FlipIcon sx={{ transform: 'rotate(90deg)', color: 'white' }} />
         </IconButton>
+        */}
         </div>
       </div>
 

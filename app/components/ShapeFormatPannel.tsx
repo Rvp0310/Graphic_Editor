@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import Rotate90DegreesCcwIcon from '@mui/icons-material/Rotate90DegreesCcw';
 import Rotate90DegreesCwIcon from '@mui/icons-material/Rotate90DegreesCw';
 import FlipIcon from '@mui/icons-material/Flip';
+import { Layers, BringToFront, SendToBack } from 'lucide-react';
 import FlipToBackIcon from '@mui/icons-material/FlipToBack';
 import FlipToFrontIcon from '@mui/icons-material/FlipToFront';
 import IconButton from '@mui/material/IconButton';
@@ -229,7 +230,7 @@ const ShapeFormatPannel = ({selectedObject, canvas}: { selectedObject: FabricObj
         </IconButton>
         {/* coming soon
         <IconButton>
-          <FlipIcon sx={{color: 'white'}}/>
+          <BringToFront size={20} strokeWidth={1.75} />
         </IconButton>
         <IconButton>
           <FlipIcon sx={{ transform: 'rotate(90deg)', color: 'white' }} />
@@ -247,14 +248,12 @@ const ShapeFormatPannel = ({selectedObject, canvas}: { selectedObject: FabricObj
         <IconButton onClick = {() => canvas.bringObjectForward(selectedObject)}>
           <FlipToFrontIcon sx={{color: 'white'}}/>
         </IconButton>
-        {/*  WIP
-        <IconButton>
-          <FlipToBackIcon onClick = {() => canvas.sendObjectToBack(selectedObject)} sx={{color: 'white'}}/>
+        <IconButton onClick = {() => canvas.sendObjectToBack(selectedObject)}>
+          <SendToBack size={25} strokeWidth={1.75} color="white"/>
         </IconButton>
-        <IconButton>
-          <FlipToFrontIcon onClick = {() => canvas.bringObjectToFront(selectedObject)} sx={{color: 'white'}}/>
+        <IconButton onClick = {() => canvas.bringObjectToFront(selectedObject)}>
+          <BringToFront size={25} strokeWidth={1.75} color="white"/>
         </IconButton> 
-        */}
         </div>
       </div>
     </div>

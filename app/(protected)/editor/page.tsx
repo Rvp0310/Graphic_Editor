@@ -84,7 +84,7 @@ const Whiteboard = () => {
   return (
     <>
     {
-      selectedObject && (isText(selectedObject) ? <TextFormatPannel/> : <ShapeFormatPannel selectedObject = {selectedObject} canvas = {canvas} />)
+      selectedObject && (isText(selectedObject) ? <TextFormatPannel selectedObject = {selectedObject} canvas = {canvas}/> : <ShapeFormatPannel selectedObject = {selectedObject} canvas = {canvas} />)
     }
     <div id = "whiteboardCanvas" ref={containerRef}>
       <canvas ref={canvasRef} />

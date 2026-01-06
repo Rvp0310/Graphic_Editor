@@ -34,6 +34,27 @@ const ShapeFormatPannel = ({selectedObject, canvas}: { selectedObject: FabricObj
     }
   }, [selectedObject]);
 
+  useEffect(() => {
+    if (!canvas || !selectedObject) return;
+
+    const updateSize = () => {
+      setWidth(Math.round(selectedObject.getScaledWidth()));
+      setHeight(Math.round(selectedObject.getScaledHeight()));
+
+      if (selectedObject.type === "rect") {
+        const rect = selectedObject as Rect;
+        setBorderRad(Math.round(rect.rx || 0));
+      }
+    };
+
+    canvas.on("object:scaling", updateSize);
+    canvas.on("object:modified", updateSize);
+
+    return () => {
+      canvas.off("object:scaling", updateSize);
+      canvas.off("object:modified", updateSize);
+    };
+  }, [canvas, selectedObject]);
 
   const isRect = (obj: any): obj is Rect => obj?.type === "rect";
 
@@ -83,6 +104,18 @@ const ShapeFormatPannel = ({selectedObject, canvas}: { selectedObject: FabricObj
     setBorderRad(percent);
     selectedObject.set({rx: radiusPx, ry: radiusPx});
     canvas.renderAll();
+  }
+
+  const rotateCW = () => {
+    selectedObject.rotate(((selectedObject.angle || 0) + 90) % 360);
+    selectedObject.setCoords();
+    canvas.requestRenderAll();
+  }
+
+  const rotateCCW = () => {
+    selectedObject.rotate(((selectedObject.angle || 0) + 270) % 360);
+    selectedObject.setCoords();
+    canvas.requestRenderAll();
   }
   
   return (
@@ -188,10 +221,10 @@ const ShapeFormatPannel = ({selectedObject, canvas}: { selectedObject: FabricObj
       <div className="PannelSection">
         <h5>Orientation</h5>
         <div className="inputGroup">
-        <IconButton>
+        <IconButton onClick={rotateCCW}>
           <Rotate90DegreesCcwIcon sx={{color: 'white'}}/>
         </IconButton>
-        <IconButton>
+        <IconButton onClick={rotateCW}>
           <Rotate90DegreesCwIcon sx={{color: 'white'}}/>
         </IconButton>
         {/* coming soon
@@ -208,12 +241,20 @@ const ShapeFormatPannel = ({selectedObject, canvas}: { selectedObject: FabricObj
       <div className="PannelSection">
         <h5>Position</h5>
         <div className="inputGroup">
-        <IconButton>
+        <IconButton onClick = {() => canvas.sendObjectBackwards(selectedObject)}>
           <FlipToBackIcon sx={{color: 'white'}}/>
         </IconButton>
-        <IconButton>
+        <IconButton onClick = {() => canvas.bringObjectForward(selectedObject)}>
           <FlipToFrontIcon sx={{color: 'white'}}/>
         </IconButton>
+        {/*  WIP
+        <IconButton>
+          <FlipToBackIcon onClick = {() => canvas.sendObjectToBack(selectedObject)} sx={{color: 'white'}}/>
+        </IconButton>
+        <IconButton>
+          <FlipToFrontIcon onClick = {() => canvas.bringObjectToFront(selectedObject)} sx={{color: 'white'}}/>
+        </IconButton> 
+        */}
         </div>
       </div>
     </div>

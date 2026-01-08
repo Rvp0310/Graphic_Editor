@@ -1,43 +1,44 @@
 "use client"
 
 import React, {useState} from 'react'
-import { Canvas, FabricObject} from 'fabric';
+import { Canvas, IText} from 'fabric';
 import { Layers, BringToFront, SendToBack } from 'lucide-react';
 import FlipToBackIcon from '@mui/icons-material/FlipToBack';
 import FlipToFrontIcon from '@mui/icons-material/FlipToFront';
 import IconButton from '@mui/material/IconButton';
+import TextColor from './controls/TextColor';
+import FontDropdown from './controls/FontFamily';
+import FontSize from './controls/FontSize';
 
-const TextFormatPannel = ({selectedObject, canvas}: { selectedObject: FabricObject; canvas: Canvas | null; }) => {
+const TextFormatPannel = ({selectedObject, canvas}: { selectedObject: IText; canvas: Canvas | null; }) => {
   if (!selectedObject || !canvas) return null;
-  
   const [highlight, setHighlight] = useState('#fff');
   const [size, setSize] = useState(1);
   const [face, setFace] = useState('Times New Roman');
-  const [textColor, setTextColor] = useState('#14116b');
 
-  const handleColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTextColor(e.target.value);
-    selectedObject.set({textColor: e.target.value});
-    canvas.renderAll();
-  }
 
   return (
     <div className='TextPannel setting'>
+      <div className="PannelSection">
+        <h5>Font</h5>
+        <div className="algnLabel">
+          <FontDropdown canvas={canvas} selectedObject={selectedObject}/>
+        </div>
+        <div className="algnLabel">
+          <FontSize canvas={canvas} selectedObject={selectedObject} />
+        </div>
+      </div>
        <div className="PannelSection">
-        <h5>Background</h5>
-        <div className="fontColorInput">
-        <label htmlFor="textColorInput" className="form-label">
-          A
-        </label>
-        <input
-          type="color"
-          className="form-control form-control-color input"
-          id="textColorInput"
-          value={textColor}
-          onChange={handleColorChange}
-          title="Choose your color"
-        />
-        </div> {/* opacity included */}
+        <h5>Color and Effect</h5>
+        <div className="inputGroup">
+        <TextColor canvas={canvas} selectedObject={selectedObject}/>
+        <div className="algnLabel">
+          <button className='effect underline'>U</button>
+        </div>
+        <div className="algnLabel">
+          <button className='effect strikethrough'>S</button>
+        </div>
+        </div>
         <div className="PannelSection">
         <h5>Position</h5>
         <div className="inputGroup">

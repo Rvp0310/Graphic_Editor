@@ -3,6 +3,7 @@ import Rotate90DegreesCcwIcon from '@mui/icons-material/Rotate90DegreesCcw';
 import Rotate90DegreesCwIcon from '@mui/icons-material/Rotate90DegreesCw';
 import FlipIcon from '@mui/icons-material/Flip';
 import { Layers, BringToFront, SendToBack } from 'lucide-react';
+import OpacityIcon from '@mui/icons-material/Opacity';
 import FlipToBackIcon from '@mui/icons-material/FlipToBack';
 import FlipToFrontIcon from '@mui/icons-material/FlipToFront';
 import IconButton from '@mui/material/IconButton';
@@ -15,6 +16,7 @@ const ShapeFormatPannel = ({selectedObject, canvas}: { selectedObject: FabricObj
   const [fillColor, setFillColor] = useState('#14116b');
   const [borderColor, setBorderColor] = useState('#000');
   const [borderRad, setBorderRad] = useState(0);
+  const [opacity, setOpacity] = useState(1);
   const [width, setWidth] = useState(1);
   const [height, setHeight] = useState(1);
 
@@ -26,6 +28,7 @@ const ShapeFormatPannel = ({selectedObject, canvas}: { selectedObject: FabricObj
     setBorderColor((selectedObject.stroke as string) || '#000');
     setWidth(Math.round(selectedObject.getScaledWidth()));
     setHeight(Math.round(selectedObject.getScaledHeight()));
+    setOpacity(selectedObject.opacity);
 
     if (selectedObject.type === 'rect') {
       const rect = selectedObject as Rect;
@@ -90,6 +93,10 @@ const ShapeFormatPannel = ({selectedObject, canvas}: { selectedObject: FabricObj
   }
 
   const handleBorderWidth = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!selectedObject.stroke || selectedObject.stroke === 'transparent') {
+      selectedObject.set('stroke', borderColor);
+    }
+    
     setStrokeWidth(+e.target.value);
     selectedObject.set({strokeWidth: +e.target.value});
     canvas.renderAll();
@@ -105,6 +112,13 @@ const ShapeFormatPannel = ({selectedObject, canvas}: { selectedObject: FabricObj
     setBorderRad(percent);
     selectedObject.set({rx: radiusPx, ry: radiusPx});
     canvas.renderAll();
+  }
+
+  const handleOpacity = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = Number(e.target.value);
+    setOpacity(val);
+    selectedObject.set({ opacity: val });
+    canvas.requestRenderAll();
   }
 
   const rotateCW = () => {
@@ -135,9 +149,20 @@ const ShapeFormatPannel = ({selectedObject, canvas}: { selectedObject: FabricObj
           onChange={handleFillChange}
           title="Choose your color"
         />
-        </div> {/* opacity included */}
+        </div>
+        <div className="algnLabel">
+          <OpacityIcon/>
+          <input
+          className='rangeInput'
+            type="range"
+            min={0}
+            max={1}
+            step={0.01}
+            value={opacity}
+            onChange={handleOpacity}
+          />
+        </div>
       </div>
-
       <div className="PannelSection">
         <h5>Border</h5>
         <div className="inputGroup">

@@ -18,7 +18,7 @@ const NavBar = () => {
 
   return (
     <nav className="nav navbar bg-body-tertiary nav1">
-          <div className="container">
+          <div className="container-fluid">
             <a className='logoLink' href="/">
               <img className='logo' src='/graphic_editor.png' alt="Smeargle" />
             </a>

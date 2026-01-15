@@ -15,8 +15,8 @@ const TextColor = ({selectedObject, canvas}: { selectedObject: IText; canvas: Ca
     <div className="fontColorInput">
       <label htmlFor="textColorInput" className="form-label">
           A
-        </label>
-        <input
+      </label>
+      <input
           type="color"
           className="form-control form-control-color input"
           id="textColorInput"

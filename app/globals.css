@@ -263,6 +263,7 @@ body {
 
 .inputGroup{
   display: flex;
+  width: 90%;
   justify-content: space-evenly;
 }
 
@@ -287,6 +288,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 14px;
 }
 
 .PannelSection{
@@ -307,6 +309,13 @@ body {
   justify-content: space-around;
   align-items: center;
 }
+
+.fontColorInput label{
+  margin-top: 1.5px;
+  margin-bottom: -9px;
+  font-size: 14.5px;
+}
+  
 
 .fontColorInput input {
   height: 10px;

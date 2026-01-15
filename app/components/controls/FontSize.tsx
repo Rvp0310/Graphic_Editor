@@ -5,10 +5,6 @@ const FontSize = ({ selectedObject, canvas }: { selectedObject: IText; canvas: C
     if (!selectedObject || !canvas) return null;
     const [fontSize, setFontSize] = useState(16);
 
-    useEffect(() => {
-        setFontSize(selectedObject.fontSize || 24);
-    }, [selectedObject]);
-
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newSize = +e.target.value;
         selectedObject.set({ fontSize: newSize });
@@ -16,6 +12,37 @@ const FontSize = ({ selectedObject, canvas }: { selectedObject: IText; canvas: C
         selectedObject.setCoords();
         canvas.requestRenderAll();
     };
+
+    const updateFontSize = () => {
+        const scaledFontSize = Math.round((selectedObject.fontSize || 16) * (selectedObject.scaleY || 1));
+        setFontSize(scaledFontSize);
+    }
+
+    const normalizeTextScale = () => {
+        const newFontSize =
+            (selectedObject.fontSize || 16) * (selectedObject.scaleY || 1);
+
+        selectedObject.set({
+            fontSize: Math.round(newFontSize),
+            scaleX: 1,
+            scaleY: 1,
+        });
+
+        selectedObject.setCoords();
+        canvas?.requestRenderAll();
+    };
+
+    useEffect(() => {
+        setFontSize(selectedObject.fontSize || 24);
+
+        canvas.on("object:scaling", updateFontSize);
+        canvas.on("object:modified", normalizeTextScale);
+
+        return () => {
+        canvas.off("object:scaling", updateFontSize);
+        canvas.off("object:modified", normalizeTextScale);
+        };
+    }, [canvas, selectedObject]);
 
     return (
         <div className='algnLabel'>

@@ -46,8 +46,10 @@ const FontSize = ({ selectedObject, canvas }: { selectedObject: IText; canvas: C
 
     return (
         <div className='algnLabel'>
+            <label htmlFor='fontSize'>Size:</label>
             <input
                 className='input'
+                id='fontSize'
                 type='number'
                 max={100}
                 min={1}

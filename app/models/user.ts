@@ -2,7 +2,7 @@ import mongoose, { Schema, models } from "mongoose";
 
 const UserSchema = new Schema(
   {
-    username: {
+     username: {
       type: String,
       required: true,
       unique: true,
@@ -19,13 +19,7 @@ const UserSchema = new Schema(
     password: {
       type: String,
       required: true,
-    },
-
-    files: [
-      {
-        type: String, // Cloudinary URL
-      }
-    ],
+    }
   },
   {
     timestamps: true,

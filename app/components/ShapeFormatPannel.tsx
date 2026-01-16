@@ -1,11 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import Rotate90DegreesCcwIcon from '@mui/icons-material/Rotate90DegreesCcw';
 import Rotate90DegreesCwIcon from '@mui/icons-material/Rotate90DegreesCw';
-import FlipIcon from '@mui/icons-material/Flip';
-import { Layers, BringToFront, SendToBack } from 'lucide-react';
 import OpacityIcon from '@mui/icons-material/Opacity';
-import FlipToBackIcon from '@mui/icons-material/FlipToBack';
-import FlipToFrontIcon from '@mui/icons-material/FlipToFront';
+import Arrange from './controls/Arrange';
 import IconButton from '@mui/material/IconButton';
 import { Canvas, FabricObject, Rect } from 'fabric';
 
@@ -266,20 +263,7 @@ const ShapeFormatPannel = ({selectedObject, canvas}: { selectedObject: FabricObj
 
       <div className="PannelSection">
         <h5>Position</h5>
-        <div className="inputGroup">
-        <IconButton onClick = {() => canvas.sendObjectBackwards(selectedObject)}>
-          <FlipToBackIcon sx={{color: 'white'}}/>
-        </IconButton>
-        <IconButton onClick = {() => canvas.bringObjectForward(selectedObject)}>
-          <FlipToFrontIcon sx={{color: 'white'}}/>
-        </IconButton>
-        <IconButton onClick = {() => canvas.sendObjectToBack(selectedObject)}>
-          <SendToBack size={25} strokeWidth={1.75} color="white"/>
-        </IconButton>
-        <IconButton onClick = {() => canvas.bringObjectToFront(selectedObject)}>
-          <BringToFront size={25} strokeWidth={1.75} color="white"/>
-        </IconButton> 
-        </div>
+        <Arrange selectedObject={selectedObject} canvas={canvas} /> 
       </div>
     </div>
   );

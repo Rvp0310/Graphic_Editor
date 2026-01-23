@@ -1,6 +1,6 @@
-import mongoose, {Schema} from "mongoose";
+import mongoose, {Schema, models} from "mongoose";
 
-const design = new Schema({
+const designSchema = new Schema({
     userId: {
         type: Schema.Types.ObjectId,
         ref: "User",
@@ -13,3 +13,5 @@ const design = new Schema({
 {
     timestamps: true
 });
+
+export const Design = models.designSchema || mongoose.model("Design", designSchema);

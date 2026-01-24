@@ -5,7 +5,7 @@ import { useState } from "react";
 
 import Button from '@mui/material/Button';
 
-import { isValidEmail, isStrongPassword } from "@/app/lib/auth";
+import { isValidEmail, isStrongPassword } from "@/app/lib/validators";
 
 const AuthPage = () => {
 

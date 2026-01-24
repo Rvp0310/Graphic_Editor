@@ -3,8 +3,12 @@ import TextField from "@mui/material/TextField";
 import { Button } from "@mui/material";
 import toast from 'react-hot-toast';
 import { Canvas } from "fabric";
+import { useAuth } from "../context/AuthContext";
 
 const NameField = ({ canvas, setDisplay }: { canvas: Canvas | null, setDisplay: React.Dispatch<React.SetStateAction<boolean>> }) => {
+  const {user} = useAuth();
+  if (!user) return null;
+
   const [name, setName] = useState<string>("Untitled Design");
 
   const handleSave = async() => {
@@ -25,6 +29,7 @@ const NameField = ({ canvas, setDisplay }: { canvas: Canvas | null, setDisplay: 
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
+                    userId: user.id,
                     name: name,
                     canvas: canvasJSON,
                     thumbnail: thumbnail

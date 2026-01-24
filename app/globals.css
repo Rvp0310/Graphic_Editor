@@ -400,3 +400,8 @@ label{
   padding: 2em;
   border-radius: 4px;
 }
+
+.designSpace{
+  width: 100%;
+  height: max-content
+}

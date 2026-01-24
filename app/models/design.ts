@@ -6,8 +6,8 @@ const designSchema = new Schema({
         ref: "User",
         required: true
     },
-    name: String,
-    canvas: Schema.Types.Mixed,
+    name: { type: String, required: true },
+    canvas: { type: Schema.Types.Mixed, required: true },
     thumbnail: String
 },
 {

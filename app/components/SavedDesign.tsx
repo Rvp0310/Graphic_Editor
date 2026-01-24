@@ -3,25 +3,28 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import CardActionArea from '@mui/material/CardActionArea';
+import { toNamespacedPath } from 'node:path';
+import { DesignType } from './DesignSpace';
 
-export default function SavedDesign() {
+export default function SavedDesign({_id, name, thumbnail, updatedAt, onClick}: DesignType) {
   return (
-    <Card sx={{ maxWidth: 345 }}>
-      <CardActionArea sx={{ display: "flex", flexDirection: "row" }}>
+    <Card sx={{ maxWidth: "90%" }}>
+      <CardActionArea sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }} onClick={onClick}>
         <CardMedia
+          sx={{ maxWidth: "20%" }}
           component="img"
-          height="140"
-          image="/static/images/cards/contemplative-reptile.jpg"
+          height="20%"
+          image={thumbnail || "/save_placeholder.jpg" }
           alt="green iguana"
         />
         <CardContent>
           <Typography gutterBottom variant="h5" component="div">
-            Lizard
+            {name || "placeholder"}
           </Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-            Lizards are a widespread group of squamate reptiles, with over 6,000
-            species, ranging across all continents except Antarctica
-          </Typography>
+          { updatedAt &&
+            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+            Last Edited: {updatedAt}
+          </Typography>}
         </CardContent>
       </CardActionArea>
     </Card>

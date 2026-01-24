@@ -1,12 +1,8 @@
+import "server-only";
+
 import { NextRequest } from "next/server";
 import { verifyToken } from "./authMiddleware";
 import { User } from "../models/user";
-
-export const isStrongPassword = (password: string) => {
-    return password.length >= 8;
-  };
-
-export  const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
 export const getUserFromToken = async (req: NextRequest) => {
   try{

@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 
-interface UserType {
+export interface UserType {
     id: string;
     username: string;
     email: string;

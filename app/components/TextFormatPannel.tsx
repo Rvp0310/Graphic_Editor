@@ -8,6 +8,8 @@ import FontAlign from './controls/FontAlign';
 import TextEdit from './controls/TextEdit';
 import FontEffects from './controls/FontEffects';
 import Arrange from './controls/Arrange';
+import Duplicate from './controls/Duplicate';
+import Delete from './controls/Delete';
 
 const TextFormatPannel = ({selectedObject, canvas}: { selectedObject: IText; canvas: Canvas | null; }) => {
   if (!selectedObject || !canvas) return null;
@@ -38,6 +40,13 @@ const TextFormatPannel = ({selectedObject, canvas}: { selectedObject: IText; can
         <div className="PannelSection">
         <h5>Position</h5>
         <Arrange canvas={canvas} selectedObject={selectedObject} /> 
+      </div>
+      <div className="PannelSection">
+        <h5>Tool Bar</h5>
+        <span>
+        <Duplicate canvas={canvas} selectedObject={selectedObject} /> 
+        <Delete canvas={canvas} selectedObject={selectedObject} /> 
+        </span>
       </div>
       </div>
     </div>

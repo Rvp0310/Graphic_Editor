@@ -5,6 +5,8 @@ import OpacityIcon from '@mui/icons-material/Opacity';
 import Arrange from './controls/Arrange';
 import IconButton from '@mui/material/IconButton';
 import { Canvas, FabricObject, Rect } from 'fabric';
+import Duplicate from './controls/Duplicate';
+import Delete from './controls/Delete';
 
 const ShapeFormatPannel = ({selectedObject, canvas}: { selectedObject: FabricObject; canvas: Canvas | null; }) => {
   if (!selectedObject || !canvas) return null;
@@ -264,6 +266,13 @@ const ShapeFormatPannel = ({selectedObject, canvas}: { selectedObject: FabricObj
       <div className="PannelSection">
         <h5>Position</h5>
         <Arrange selectedObject={selectedObject} canvas={canvas} /> 
+      </div>
+      <div className="PannelSection">
+        <h5>Tool Bar</h5>
+        <span>
+        <Duplicate canvas={canvas} selectedObject={selectedObject} /> 
+        <Delete canvas={canvas} selectedObject={selectedObject} /> 
+        </span>
       </div>
     </div>
   );

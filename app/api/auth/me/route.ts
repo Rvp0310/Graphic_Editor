@@ -8,10 +8,28 @@ export const GET = async (req: Request) => {
         await connectDB();
     
         const payload: any = verifyToken(req as any);
+
+        if (!payload?.id) {
+            return NextResponse.json(
+                { user: null },
+                { status: 401 }
+            );
+        }
+        
         const user = await User.findById(payload.id).select("-password");
+
+        if (!user) {
+            return NextResponse.json(
+                { user: null },
+                { status: 401 }
+            );
+        }
         
         return NextResponse.json({ user });
     } catch {
-        return NextResponse.json({ user: null });
+        return NextResponse.json(
+            { user: null },
+            { status: 401 }
+        );
     }
 }

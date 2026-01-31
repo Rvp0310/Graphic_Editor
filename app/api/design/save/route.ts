@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { Design } from "@/app/models/design";
 import { connectDB } from "@/app/lib/db"; 
 import { getUserFromToken } from "@/app/lib/auth";
-import { UserType } from "@/app/context/AuthContext";
 
 export const POST = async (req: NextRequest) => {
     try{
@@ -35,16 +34,18 @@ export const POST = async (req: NextRequest) => {
 
 export const GET = async (req: NextRequest) => {
     try{
+        console.log("here")
         await connectDB();
-
+        console.log("Fetching user...");
         const user = await getUserFromToken(req);
 
+        console.log(user);
         if (!user) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
         
         const designs = await Design.find({userId: user._id}).select("name thumbnail updatedAt").sort({ updatedAt: -1 });
-        
+        console.log(designs);
         return NextResponse.json({ designs }, { status: 200 });
     } catch (err) {
         return NextResponse.json(

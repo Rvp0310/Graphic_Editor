@@ -3,12 +3,14 @@ import "server-only";
 import { NextRequest } from "next/server";
 import { verifyToken } from "./authMiddleware";
 import { User } from "../models/user";
+import { connectDB } from "./db";
 
 export const getUserFromToken = async (req: NextRequest) => {
   try{
-    const decoded = verifyToken(req);
-    const {userId} = decoded as {userId: string};
-    const currUser = await User.findById(userId);
+    await connectDB();
+    
+    const payload: any = verifyToken(req as any);
+    const currUser = await User.findById(payload.id);
 
     if(!currUser){
       throw new Error("No User Exist");

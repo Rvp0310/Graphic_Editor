@@ -402,6 +402,11 @@ label{
 }
 
 .designSpace{
+  margin-top: 1em;
   width: 100%;
-  height: max-content
+  height: max-content;
+  display: flex;
+  flex-direction: column;
+  gap: 2em;
+  align-items: center;
 }

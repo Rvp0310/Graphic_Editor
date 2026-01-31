@@ -22,15 +22,14 @@ const DesignSpace = ({user}: { user: UserType; }) => {
     
     const fetchDesigns = async () => {
       try{
-        const res = await fetch("api/design/save", {
+        console.log("calling backend")
+        const res = await fetch("/api/design/save", {
           method: "GET",
-          headers: {
-                    'Content-Type': 'application/json'
-                }
+          credentials: "include"
         });
         const data = await res.json();
         setDesigns(data.designs);
-        console.log(designs);
+        console.log(data.designs);
       } catch (err) {
         console.error("Failed to fetch designs", err);
       } finally {
@@ -57,6 +56,7 @@ const DesignSpace = ({user}: { user: UserType; }) => {
           updatedAt={design.updatedAt}
           onClick={() => {
             // navigate to editor
+            
             window.location.href = `/editor/${design._id}`;
           }}
         />

@@ -3,7 +3,7 @@
 import ShapeFormatPannel from '@/app/components/ShapeFormatPannel';
 import TextFormatPannel from '@/app/components/TextFormatPannel';
 import WhiteboardEditMenu from '@/app/components/WhiteboardEditMenu'
-import { Canvas, Rect, FabricObject } from 'fabric';
+import { Canvas, Rect, FabricObject, IText } from 'fabric';
 import React, {useEffect, useRef, useState} from 'react'
 
 const Whiteboard = () => {
@@ -12,7 +12,7 @@ const Whiteboard = () => {
   const [selectedObject, setSelectedObject] = useState<FabricObject | null>(null);
   const [canvas, setCanvas] = useState<null|Canvas>(null);
 
-  const isText = (obj: any) =>
+  const isText = (obj: FabricObject | null): obj is IText =>
       obj?.type === "i-text" ||
       obj?.type === "textbox" ||
       obj?.type === "text";
@@ -34,19 +34,6 @@ const Whiteboard = () => {
     });
 
     setCanvas(fc);
-
-    const bg = new Rect({
-      left: 0,
-      top: 0,
-      width: clientWidth,
-      height: clientHeight,
-      fill: 'transparent',
-      selectable: false,
-      evented: false,
-    });
-
-    fc.add(bg);
-    fc.sendObjectToBack(bg);
     
     fc.on("selection:created", (e: any) => {
       const obj = e.selected?.[0];

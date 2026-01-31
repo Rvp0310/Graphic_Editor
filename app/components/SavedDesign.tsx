@@ -3,12 +3,11 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import CardActionArea from '@mui/material/CardActionArea';
-import { toNamespacedPath } from 'node:path';
 import { DesignType } from './DesignSpace';
 
 export default function SavedDesign({_id, name, thumbnail, updatedAt, onClick}: DesignType) {
   return (
-    <Card sx={{ maxWidth: "90%" }}>
+    <Card sx={{ minWidth: "70%" }}>
       <CardActionArea sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }} onClick={onClick}>
         <CardMedia
           sx={{ maxWidth: "20%" }}

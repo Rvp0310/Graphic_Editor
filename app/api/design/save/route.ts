@@ -54,3 +54,51 @@ export const GET = async (req: NextRequest) => {
         );
     }
 }
+
+export const DELETE = async (req: NextRequest) => {
+    try{
+        await connectDB();
+
+        const {designId}: { designId: string} = await req.json();
+
+        const design = await Design.findOneAndDelete({_id: designId});
+
+        if (!design) {
+            return NextResponse.json(
+                { error: "Design not found" },
+                { status: 404 }
+            );
+        }
+
+        return NextResponse.json({ success: true, design }, { status: 200 });
+    } catch {
+        return NextResponse.json(
+        { error: "Failed to Delete The Design" },
+        { status: 500 }
+        );
+    }
+}
+
+export const PUT = async (req: NextRequest) => {
+    try{
+        await connectDB();
+
+        const {designId, name}: { designId: string, name: string} = await req.json();
+
+        const design = await Design.findOneAndUpdate({_id: designId}, {name});
+
+        if (!design) {
+            return NextResponse.json(
+                { error: "Design not found" },
+                { status: 404 }
+            );
+        }
+
+        return NextResponse.json({ success: true, design }, { status: 200 });
+    } catch {
+        return NextResponse.json(
+        { error: "Failed to Rename The Design" },
+        { status: 500 }
+        );
+    }
+}

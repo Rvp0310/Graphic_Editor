@@ -3,24 +3,24 @@
 import React, { useEffect, useState } from 'react'
 import { UserType } from '../context/AuthContext';
 import SavedDesign from './SavedDesign';
+import toast from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
 
 export type DesignType = {
   _id: string;
   name: string;
   thumbnail: string;
   updatedAt: string;
+  fetchDesigns: () => void;
   onClick: () => void;
 }
 
 const DesignSpace = ({user}: { user: UserType; }) => {
-
+  const router = useRouter();
   const [designs, setDesigns] = useState<DesignType[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if(!user?.id) return;
-    
-    const fetchDesigns = async () => {
+  const fetchDesigns = async () => {
       try{
         console.log("calling backend")
         const res = await fetch("/api/design/save", {
@@ -30,12 +30,15 @@ const DesignSpace = ({user}: { user: UserType; }) => {
         const data = await res.json();
         setDesigns(data.designs);
         console.log(data.designs);
-      } catch (err) {
-        console.error("Failed to fetch designs", err);
+      } catch {
+        toast.error("Failed to fetch designs");
       } finally {
         setLoading(false);
       }
     }
+
+  useEffect(() => {
+    if(!user?.id) return;
 
     fetchDesigns();
   }, [user?.id])
@@ -54,10 +57,11 @@ const DesignSpace = ({user}: { user: UserType; }) => {
           name={design.name}
           thumbnail={design.thumbnail}
           updatedAt={design.updatedAt}
+          fetchDesigns = {fetchDesigns}
           onClick={() => {
             // navigate to editor
-            
-            window.location.href = `/editor/${design._id}`;
+          
+            router.push(`/editor/${design._id}`);
           }}
         />
       ))}

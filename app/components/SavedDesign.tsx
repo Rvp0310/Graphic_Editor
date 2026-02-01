@@ -4,11 +4,12 @@ import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import CardActionArea from '@mui/material/CardActionArea';
 import { DesignType } from './DesignSpace';
+import SavedDesignOptions from './SavedDesignOptions';
 
-export default function SavedDesign({_id, name, thumbnail, updatedAt, onClick}: DesignType) {
+export default function SavedDesign({_id, name, thumbnail, updatedAt, fetchDesigns, onClick}: DesignType) {
   return (
     <Card sx={{ minWidth: "70%" }}>
-      <CardActionArea sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }} onClick={onClick}>
+      <CardActionArea sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
         <CardMedia
           sx={{ maxWidth: "20%" }}
           component="img"
@@ -16,7 +17,7 @@ export default function SavedDesign({_id, name, thumbnail, updatedAt, onClick}: 
           image={thumbnail || "/save_placeholder.jpg" }
           alt="green iguana"
         />
-        <CardContent>
+        <CardContent onClick={onClick}>
           <Typography gutterBottom variant="h5" component="div">
             {name || "placeholder"}
           </Typography>
@@ -25,6 +26,7 @@ export default function SavedDesign({_id, name, thumbnail, updatedAt, onClick}: 
             Last Edited: {updatedAt}
           </Typography>}
         </CardContent>
+        <SavedDesignOptions id = {_id} name = {name} fetchDesigns={fetchDesigns}/>
       </CardActionArea>
     </Card>
   );

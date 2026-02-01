@@ -3,12 +3,16 @@
 import ShapeFormatPannel from '@/app/components/ShapeFormatPannel';
 import TextFormatPannel from '@/app/components/TextFormatPannel';
 import WhiteboardEditMenu from '@/app/components/WhiteboardEditMenu'
-import { Canvas, Rect, FabricObject, IText } from 'fabric';
+import { Canvas, FabricObject, IText } from 'fabric';
 import React, {useEffect, useRef, useState} from 'react'
 
 const Whiteboard = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const historyRef = useRef<string[]>([]);
+  const historyIndexRef = useRef<number>(-1);
+  const isRestoringRef = useRef(false);
+  const isUserActionRef = useRef(false);
   const [selectedObject, setSelectedObject] = useState<FabricObject | null>(null);
   const [canvas, setCanvas] = useState<null|Canvas>(null);
 
@@ -16,6 +20,15 @@ const Whiteboard = () => {
       obj?.type === "i-text" ||
       obj?.type === "textbox" ||
       obj?.type === "text";
+
+  const saveState = (fc: Canvas) => {
+    const json = JSON.stringify(fc.toJSON());
+
+    historyRef.current.splice(historyIndexRef.current + 1);
+
+    historyRef.current.push(json);
+    historyIndexRef.current++;
+  };
 
   useEffect(() => {
     if(!canvasRef.current || !containerRef.current)
@@ -53,8 +66,10 @@ const Whiteboard = () => {
     fc.on('object:modified', (e: any) => {
       const obj = e.target as FabricObject | undefined;
       if (!obj) return;
+      if (isRestoringRef.current) return;
 
       setSelectedObject(obj);
+      saveState(fc);
     });
 
     fc.on('object:scaling', (e: any) => {
@@ -63,10 +78,50 @@ const Whiteboard = () => {
       setSelectedObject(obj);
     });
 
+    fc.on("object:added", () => {
+      if (!isUserActionRef.current || isRestoringRef.current) return;
+
+      saveState(fc);
+      isUserActionRef.current = false;
+    });
+
+    fc.on("object:removed", () => {
+      if (isRestoringRef.current) return;
+      saveState(fc);
+    });
+
     return () => {
       fc.dispose()
     }
   }, []);
+
+  const undo = () => {
+    if (!canvas || historyIndexRef.current <= 0) return;
+
+    isRestoringRef.current = true;
+    historyIndexRef.current--;
+    canvas.loadFromJSON(
+      historyRef.current[historyIndexRef.current],
+      () => {
+        canvas.requestRenderAll();
+        isRestoringRef.current = false;
+      }
+    );
+  }
+
+  const redo = () => {
+    if (!canvas || historyIndexRef.current >= historyRef.current.length - 1) return;
+
+    isRestoringRef.current = true;
+    historyIndexRef.current++;
+    canvas.loadFromJSON(
+      historyRef.current[historyIndexRef.current],
+      () => {
+        canvas.requestRenderAll();
+        isRestoringRef.current = false;
+      }
+    );
+  }
 
   return (
     <>
@@ -75,7 +130,7 @@ const Whiteboard = () => {
     }
     <div id = "whiteboardCanvas" ref={containerRef}>
       <canvas ref={canvasRef} />
-      {canvas && <WhiteboardEditMenu canvas = {canvas}/>}
+      {canvas && <WhiteboardEditMenu canvas = {canvas} undo={undo} redo={redo}/>}
     </div>
     </>
   )

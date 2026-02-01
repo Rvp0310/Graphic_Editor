@@ -410,3 +410,15 @@ label{
   gap: 2em;
   align-items: center;
 }
+
+.renameFile{
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5;
+  background-color: var(--celadon);
+  padding: 2em;
+  border-radius: 4px;
+}

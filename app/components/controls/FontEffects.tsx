@@ -3,28 +3,28 @@ import { Canvas, IText } from "fabric";
 import TextColor from "./TextColor";
 import TextHighLight from "./TextHighLight";
 
-const FontEffects = ({
-  selectedObject,
-  canvas,
-}: {
-  selectedObject: IText;
-  canvas: Canvas | null;
-}) => {
+const FontEffects = ({selectedObject, canvas, saveState}: { selectedObject: IText; canvas: Canvas | null; saveState: () => void; }) => {
   if (!selectedObject || !canvas) return null;
 
-  const toggle = (prop: keyof IText, val: any) => (
-    selectedObject.set(prop, selectedObject.get(prop) === val ? "" : val),
-    canvas.renderAll()
-  );
+  const toggle = (prop: keyof IText, val: any) => {
+    if (!canvas || !selectedObject) return;
+
+    const current = selectedObject.get(prop);
+
+    selectedObject.set(prop, current === val ? "" : val);
+
+    canvas.requestRenderAll();
+    saveState();
+  };
 
   return (
     <div className="inputGroup">
       <div className="algnLabel">
-        <TextColor canvas={canvas} selectedObject={selectedObject} />
+        <TextColor canvas={canvas} selectedObject={selectedObject} saveState={saveState} />
       </div>
 
       <div className="algnLabel">
-        <TextHighLight canvas={canvas} selectedObject={selectedObject} />
+        <TextHighLight canvas={canvas} selectedObject={selectedObject} saveState={saveState} />
       </div>
 
       <div className="algnLabel">

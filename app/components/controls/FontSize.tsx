@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Canvas, IText } from 'fabric';
 
-const FontSize = ({ selectedObject, canvas }: { selectedObject: IText; canvas: Canvas | null; }) => {
+const FontSize = ({selectedObject, canvas, saveState}: { selectedObject: IText; canvas: Canvas | null; saveState: () => void; }) => {
     if (!selectedObject || !canvas) return null;
     const [fontSize, setFontSize] = useState(16);
 
@@ -55,6 +55,7 @@ const FontSize = ({ selectedObject, canvas }: { selectedObject: IText; canvas: C
                 min={1}
                 value={fontSize}
                 onChange={handleChange}
+                onBlur={saveState}
             />
         </div>
     );

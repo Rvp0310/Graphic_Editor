@@ -8,7 +8,7 @@ import { Canvas, FabricObject, Rect } from 'fabric';
 import Duplicate from './controls/Duplicate';
 import Delete from './controls/Delete';
 
-const ShapeFormatPannel = ({selectedObject, canvas}: { selectedObject: FabricObject; canvas: Canvas | null; }) => {
+const ShapeFormatPannel = ({selectedObject, canvas, saveState}: { selectedObject: FabricObject; canvas: Canvas | null; saveState: () => void }) => {
   if (!selectedObject || !canvas) return null;
   
   const [strokeWidth, setStrokeWidth] = useState(1);
@@ -124,12 +124,14 @@ const ShapeFormatPannel = ({selectedObject, canvas}: { selectedObject: FabricObj
     selectedObject.rotate(((selectedObject.angle || 0) + 90) % 360);
     selectedObject.setCoords();
     canvas.requestRenderAll();
+    saveState();
   }
 
   const rotateCCW = () => {
     selectedObject.rotate(((selectedObject.angle || 0) + 270) % 360);
     selectedObject.setCoords();
     canvas.requestRenderAll();
+    saveState();
   }
   
   return (
@@ -145,7 +147,8 @@ const ShapeFormatPannel = ({selectedObject, canvas}: { selectedObject: FabricObj
           className="form-control form-control-color input"
           id="backgroundColorInput"
           value={fillColor}
-          onChange={handleFillChange}
+          onInput={handleFillChange}
+          onBlur={saveState}
           title="Choose your color"
         />
         </div>
@@ -159,6 +162,7 @@ const ShapeFormatPannel = ({selectedObject, canvas}: { selectedObject: FabricObj
             step={0.01}
             value={opacity}
             onChange={handleOpacity}
+            onMouseUp={saveState}
           />
         </div>
       </div>
@@ -174,7 +178,8 @@ const ShapeFormatPannel = ({selectedObject, canvas}: { selectedObject: FabricObj
           className="form-control form-control-color input"
           id="borderColorInput"
           value={borderColor}
-          onChange={handleBorderFill}
+          onInput={handleBorderFill}
+          onBlur={saveState}
           title="Choose your color"
         /></div>
         {
@@ -191,6 +196,7 @@ const ShapeFormatPannel = ({selectedObject, canvas}: { selectedObject: FabricObj
             max={50}
             value={borderRad}
             onChange={handleBorderRadius}
+            onBlur={saveState}
           />
           </div>
         }
@@ -206,6 +212,7 @@ const ShapeFormatPannel = ({selectedObject, canvas}: { selectedObject: FabricObj
           max={50}
           value={strokeWidth}
           onChange={handleBorderWidth}
+          onBlur={saveState}
         />
         </div>
         </div>
@@ -225,6 +232,7 @@ const ShapeFormatPannel = ({selectedObject, canvas}: { selectedObject: FabricObj
             min={1}
             value={width}
             onChange={handleWidthChange}
+            onBlur={saveState}
           />
         </div>
         <div className="algnLabel">
@@ -238,6 +246,7 @@ const ShapeFormatPannel = ({selectedObject, canvas}: { selectedObject: FabricObj
           min={1}
           value={height}
           onChange={handleHeightChange}
+          onBlur={saveState}
         />
         </div>
         </div>
@@ -265,13 +274,13 @@ const ShapeFormatPannel = ({selectedObject, canvas}: { selectedObject: FabricObj
 
       <div className="PannelSection">
         <h5>Position</h5>
-        <Arrange selectedObject={selectedObject} canvas={canvas} /> 
+        <Arrange selectedObject={selectedObject} canvas={canvas} saveState={saveState}/> 
       </div>
       <div className="PannelSection">
         <h5>Tool Bar</h5>
         <span>
-        <Duplicate canvas={canvas} selectedObject={selectedObject} /> 
-        <Delete canvas={canvas} selectedObject={selectedObject} /> 
+        <Duplicate canvas={canvas} selectedObject={selectedObject} saveState={saveState}/> 
+        <Delete canvas={canvas} selectedObject={selectedObject} saveState = {saveState}/> 
         </span>
       </div>
     </div>

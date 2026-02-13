@@ -13,7 +13,7 @@ const fonts = [
   "Comic Sans MS",
 ];
 
-const FontDropdown = ({selectedObject, canvas}: { selectedObject: IText; canvas: Canvas | null; }) => {
+const FontDropdown = ({selectedObject, canvas, saveState}: { selectedObject: IText; canvas: Canvas | null; saveState: () => void; }) => {
     if (!selectedObject || !canvas) return null;
     const [font, setFont] = useState<string>("Arial");
 
@@ -22,6 +22,8 @@ const FontDropdown = ({selectedObject, canvas}: { selectedObject: IText; canvas:
     setFont(newFont);
       selectedObject.set({ fontFamily: newFont });
       canvas?.requestRenderAll();
+
+      saveState();
     }
 
   return (

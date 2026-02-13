@@ -12,7 +12,6 @@ const Whiteboard = () => {
   const historyRef = useRef<string[]>([]);
   const historyIndexRef = useRef<number>(-1);
   const isRestoringRef = useRef(false);
-  const isUserActionRef = useRef(false);
   const [selectedObject, setSelectedObject] = useState<FabricObject | null>(null);
   const [canvas, setCanvas] = useState<null|Canvas>(null);
 
@@ -21,12 +20,15 @@ const Whiteboard = () => {
       obj?.type === "textbox" ||
       obj?.type === "text";
 
-  const saveState = (fc: Canvas) => {
-    const json = JSON.stringify(fc.toJSON());
+  const saveState = () => {
+    if (!canvas || isRestoringRef.current) return;
 
-    historyRef.current.splice(historyIndexRef.current + 1);
+    const current = JSON.stringify(canvas.toJSON());
 
-    historyRef.current.push(json);
+    if (historyRef.current[historyIndexRef.current] === current) return;
+
+    historyRef.current = historyRef.current.slice(0, historyIndexRef.current + 1);
+    historyRef.current.push(current);
     historyIndexRef.current++;
   };
 
@@ -46,8 +48,54 @@ const Whiteboard = () => {
       backgroundColor: '#fff'
     });
 
+    const initial = JSON.stringify(fc.toJSON());
+    historyRef.current = [initial];
+    historyIndexRef.current = 0;
+
     setCanvas(fc);
+
+    let textPreEditState: string | null = null;
+
+    fc.on("text:editing:entered", () => {
+      if (isRestoringRef.current) return;
+      textPreEditState = JSON.stringify(fc.toJSON());
+    });
+
+    fc.on("text:editing:exited", () => {
+      if (isRestoringRef.current || !textPreEditState) return;
+
+      const current = JSON.stringify(fc.toJSON());
+
+      if (current !== textPreEditState) {
+        historyRef.current = historyRef.current.slice(0, historyIndexRef.current + 1);
+        historyRef.current.push(current);
+        historyIndexRef.current++;
+      }
+
+      textPreEditState = null;
+    });
     
+    let preActionState: string | null = null;
+
+    fc.on("mouse:down", () => {
+      if (isRestoringRef.current) return;
+      preActionState = JSON.stringify(fc.toJSON());
+    });
+
+    fc.on("mouse:up", () => {
+      if (isRestoringRef.current || !preActionState) return;
+
+      const current = JSON.stringify(fc.toJSON());
+
+      if (current !== preActionState) {
+        historyRef.current = historyRef.current.slice(0, historyIndexRef.current + 1);
+        historyRef.current.push(current);
+        historyIndexRef.current++;
+      }
+
+      preActionState = null;
+    });
+
     fc.on("selection:created", (e: any) => {
       const obj = e.selected?.[0];
       console.log("TYPE:", obj?.type);
@@ -64,30 +112,17 @@ const Whiteboard = () => {
     });
 
     fc.on('object:modified', (e: any) => {
+      if (isRestoringRef.current) return;
       const obj = e.target as FabricObject | undefined;
       if (!obj) return;
-      if (isRestoringRef.current) return;
 
       setSelectedObject(obj);
-      saveState(fc);
     });
 
     fc.on('object:scaling', (e: any) => {
       const obj = e.target;
       if (!obj) return;
       setSelectedObject(obj);
-    });
-
-    fc.on("object:added", () => {
-      if (!isUserActionRef.current || isRestoringRef.current) return;
-
-      saveState(fc);
-      isUserActionRef.current = false;
-    });
-
-    fc.on("object:removed", () => {
-      if (isRestoringRef.current) return;
-      saveState(fc);
     });
 
     return () => {
@@ -104,6 +139,10 @@ const Whiteboard = () => {
       historyRef.current[historyIndexRef.current],
       () => {
         canvas.requestRenderAll();
+
+        canvas.discardActiveObject();
+        setSelectedObject(null);
+
         isRestoringRef.current = false;
       }
     );
@@ -126,11 +165,11 @@ const Whiteboard = () => {
   return (
     <>
     {
-      selectedObject && (isText(selectedObject) ? <TextFormatPannel selectedObject = {selectedObject} canvas = {canvas}/> : <ShapeFormatPannel selectedObject = {selectedObject} canvas = {canvas} />)
+      selectedObject && (isText(selectedObject) ? <TextFormatPannel selectedObject = {selectedObject} canvas = {canvas} saveState = {saveState} /> : <ShapeFormatPannel selectedObject = {selectedObject} canvas = {canvas} saveState = {saveState}/>)
     }
     <div id = "whiteboardCanvas" ref={containerRef}>
       <canvas ref={canvasRef} />
-      {canvas && <WhiteboardEditMenu canvas = {canvas} undo={undo} redo={redo}/>}
+      {canvas && <WhiteboardEditMenu canvas = {canvas} undo={undo} redo={redo} saveState={saveState}/>}
     </div>
     </>
   )

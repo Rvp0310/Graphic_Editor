@@ -3,13 +3,7 @@ import React from "react";
 import IconButton from "@mui/material/IconButton";
 import { Canvas, FabricObject } from "fabric";
 
-const Duplicate = ({
-  selectedObject,
-  canvas,
-}: {
-  selectedObject: FabricObject | null;
-  canvas: Canvas | null;
-}) => {
+const Duplicate = ({selectedObject, canvas, saveState}: { selectedObject: FabricObject; canvas: Canvas | null; saveState: () => void }) => {
   if (!canvas) return null;
 
   const copy = async () => {
@@ -25,6 +19,7 @@ const Duplicate = ({
     canvas.add(cloned);
     canvas.setActiveObject(cloned);
     canvas.renderAll();
+    saveState();
   };
 
   return (

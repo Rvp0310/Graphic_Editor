@@ -7,7 +7,7 @@ import Export from './Export';
 import Undo from './Undo';
 import Redo from './Redo';
 
-const EditMenu = ({canvas, undo, redo} : {canvas: Canvas | null; undo: () => void; redo: () => void}) => {
+const EditMenu = ({canvas, undo, redo, saveState} : {canvas: Canvas | null; undo: () => void; redo: () => void; saveState: () => void }) => {
   if (!canvas) return null;
 
   return (
@@ -16,7 +16,7 @@ const EditMenu = ({canvas, undo, redo} : {canvas: Canvas | null; undo: () => voi
         canvas && 
         <>
           <AddShape canvas = {canvas} />
-          <AddText canvas = {canvas} />
+          <AddText canvas = {canvas} saveState = {saveState}/>
           <Save canvas = {canvas} />
           <Export canvas = {canvas} />
           <Undo canvas={canvas} undo={undo}/>

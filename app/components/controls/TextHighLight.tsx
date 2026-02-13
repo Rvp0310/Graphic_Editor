@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Canvas, IText} from 'fabric';
 
-const TextHighLight = ({selectedObject, canvas}: { selectedObject: IText; canvas: Canvas | null; }) => {
+const TextHighLight = ({selectedObject, canvas, saveState}: { selectedObject: IText; canvas: Canvas | null; saveState: () => void; }) => {
     if (!selectedObject || !canvas) return null;
 
     const [highlight, setHighlight] = useState<string>('#fff');
@@ -25,7 +25,8 @@ const TextHighLight = ({selectedObject, canvas}: { selectedObject: IText; canvas
       className="highlight-input"
       id="Highlight"
       value={highlight}
-      onChange={handleChange}
+      onInput={handleChange}
+      onBlur={saveState}
       title="Choose highlight color"
     />
 </div>

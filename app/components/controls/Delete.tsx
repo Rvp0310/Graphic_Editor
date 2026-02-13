@@ -3,13 +3,7 @@
  import IconButton from "@mui/material/IconButton";
 import { Canvas, FabricObject } from "fabric";
  
- const Delete = ({
-   selectedObject,
-   canvas,
- }: {
-   selectedObject: FabricObject | null;
-   canvas: Canvas | null;
- }) => {
+ const Delete = ({selectedObject, canvas, saveState}: { selectedObject: FabricObject; canvas: Canvas | null; saveState: () => void }) => {
     if (!canvas) return null;
     
     const del = () => {
@@ -17,6 +11,7 @@ import { Canvas, FabricObject } from "fabric";
 
         canvas.remove(selectedObject);
         canvas.renderAll();
+        saveState();
     }
 
    return (

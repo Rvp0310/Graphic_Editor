@@ -1,6 +1,6 @@
 "use client"
 
-import React, {useState} from 'react'
+import React from 'react'
 import { Canvas, IText} from 'fabric';
 import FontDropdown from './controls/FontFamily';
 import FontSize from './controls/FontSize';
@@ -11,7 +11,7 @@ import Arrange from './controls/Arrange';
 import Duplicate from './controls/Duplicate';
 import Delete from './controls/Delete';
 
-const TextFormatPannel = ({selectedObject, canvas}: { selectedObject: IText; canvas: Canvas | null; }) => {
+const TextFormatPannel = ({selectedObject, canvas, saveState}: { selectedObject: IText; canvas: Canvas | null; saveState: () => void; }) => {
   if (!selectedObject || !canvas) return null;
 
   return (
@@ -20,32 +20,32 @@ const TextFormatPannel = ({selectedObject, canvas}: { selectedObject: IText; can
         <h5>Typography</h5>
         <div className="inputGroup">
         <div className="algnLabel">
-          <FontDropdown canvas={canvas} selectedObject={selectedObject}/>
+          <FontDropdown canvas={canvas} selectedObject={selectedObject} saveState={saveState}/>
         </div>
         <div className="algnLabel">
-          <FontSize canvas={canvas} selectedObject={selectedObject} />
+          <FontSize canvas={canvas} selectedObject={selectedObject} saveState={saveState}/>
         </div>
         </div>
       </div>
        <div className="PannelSection">
         <h5>Color and Effect</h5>
-        <FontEffects selectedObject={selectedObject} canvas={canvas}/>
+        <FontEffects selectedObject={selectedObject} canvas={canvas} saveState={saveState}/>
         <div className="PannelSection">
         <h5>Layout</h5>
         <div className="inputGroup">
-          <FontAlign canvas={canvas} selectedObject={selectedObject}/>
-          <TextEdit canvas={canvas} selectedObject={selectedObject}/>
+          <FontAlign canvas={canvas} selectedObject={selectedObject} saveState={saveState}/>
+          <TextEdit canvas={canvas} selectedObject={selectedObject} saveState={saveState}/>
         </div>
         </div>
         <div className="PannelSection">
         <h5>Position</h5>
-        <Arrange canvas={canvas} selectedObject={selectedObject} /> 
+        <Arrange canvas={canvas} selectedObject={selectedObject} saveState={saveState}/> 
       </div>
       <div className="PannelSection">
         <h5>Tool Bar</h5>
         <span>
-        <Duplicate canvas={canvas} selectedObject={selectedObject} /> 
-        <Delete canvas={canvas} selectedObject={selectedObject} /> 
+        <Duplicate canvas={canvas} selectedObject={selectedObject} saveState={saveState}/> 
+        <Delete canvas={canvas} selectedObject={selectedObject} saveState={saveState}/> 
         </span>
       </div>
       </div>

@@ -1,16 +1,14 @@
-import React, {useState} from 'react'
+import React, {useRef} from 'react'
 import { Canvas } from 'fabric'
 import { IText } from "fabric";
 
-const AddText = ({canvas} : {canvas: Canvas | null}) => {
-  // const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  // const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-  //   setAnchorEl(e.currentTarget);
-  // };
-  
-  const addText = () => {
-  if (!canvas) return;
+const AddText = ({canvas, saveState} : {canvas: Canvas | null; saveState: () => void}) => {
+  const isAddingText = useRef(false);
 
+  const addText = () => {
+  if (!canvas || isAddingText.current) return;
+
+  isAddingText.current = true;
   canvas.defaultCursor = "text";
 
   const onMouseDown = (opt: any) => {
@@ -48,6 +46,8 @@ const AddText = ({canvas} : {canvas: Canvas | null}) => {
 
       canvas.off("mouse:down", onMouseDown);
       canvas.defaultCursor = "default";
+
+      isAddingText.current = false;
     };
 
     canvas.on("mouse:down", onMouseDown);

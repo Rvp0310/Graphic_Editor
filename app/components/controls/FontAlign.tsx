@@ -6,7 +6,7 @@ import FormatAlignJustifyIcon from '@mui/icons-material/FormatAlignJustify';
 import FormatAlignLeftIcon from '@mui/icons-material/FormatAlignLeft';
 import FormatAlignRightIcon from '@mui/icons-material/FormatAlignRight';
 
-const FontAlign = ({selectedObject, canvas}: { selectedObject: IText; canvas: Canvas | null; }) => {
+const FontAlign = ({selectedObject, canvas, saveState}: { selectedObject: IText; canvas: Canvas | null; saveState: () => void; }) => {
   if (!selectedObject || !canvas) return null;
 
   const alignText = (align: 'left' | 'center' | 'right' | 'justify') =>
@@ -14,19 +14,19 @@ const FontAlign = ({selectedObject, canvas}: { selectedObject: IText; canvas: Ca
 
   return (
     <div className="fontAlgn">
-            <IconButton size="small" onClick={() => {alignText('left')}}>
+            <IconButton size="small" onClick={() => {alignText('left'); saveState();}}>
               <FormatAlignLeftIcon sx={{color: 'white', fontSize: '18px'}}/>
             </IconButton>
 
-            <IconButton size="small" onClick={() => {alignText('center')}}>
+            <IconButton size="small" onClick={() => {alignText('center'); saveState();}}>
               <FormatAlignCenterIcon sx={{color: 'white', fontSize: '18px'}}/>
             </IconButton>
 
-            <IconButton size="small" onClick={() => {alignText('right')}}>
+            <IconButton size="small" onClick={() => {alignText('right'); saveState();}}>
               <FormatAlignRightIcon sx={{color: 'white', fontSize: '18px'}}/>
             </IconButton>
 
-            <IconButton size="small" onClick={() => {alignText('justify')}}>
+            <IconButton size="small" onClick={() => {alignText('justify'); saveState();}}>
               <FormatAlignJustifyIcon sx={{color: 'white', fontSize: '18px'}}/>
             </IconButton>
     </div>

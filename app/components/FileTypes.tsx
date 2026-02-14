@@ -7,7 +7,7 @@ const FileTypes = () => {
     Looking For:
       <div className='fileTypes'>
           <a href='/editor'>
-              <img className='icons' src='/whiteboard.jpg' alt='whiteboard'/>
+              <img className='icons' src='/whiteboard.png' alt='whiteboard'/>
           </a>
       </div>
     </>

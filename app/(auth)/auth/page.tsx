@@ -82,7 +82,7 @@ const AuthPage = () => {
           <input className="input in" placeholder="Username" value = {username} onChange= {(e) => setUsername(e.target.value)}/>
           <input className="input in" type="password" placeholder="Password" value = {password} onChange= {(e) => setPassword(e.target.value)}/>
 
-          <Button className='LoginBtn' onClick={handleLogin}>Login</Button>
+          <Button className='LoginBtn' style={{marginTop: "3.5px"}} onClick={handleLogin}>Login</Button>
         </form>
       </div>
       : 
@@ -105,7 +105,7 @@ const AuthPage = () => {
           <input className="input in" type="password" placeholder="Password" value = {password} onChange= {(e) => setPassword(e.target.value)}/>
           <input className="input in" type="password" placeholder="Confirm Password" value = {confPassword} onChange= {(e) => setConfPassword(e.target.value)}/>
 
-          <Button className='SignUpBtn' onClick={handleSignup}>Sign-Up</Button>
+          <Button className='SignUpBtn' style={{marginTop: "3.5px"}} onClick={handleSignup}>Sign-Up</Button>
         </form>
       </div>
       :

@@ -6,6 +6,7 @@ import { useState } from "react";
 import Button from '@mui/material/Button';
 
 import { isValidEmail, isStrongPassword } from "@/app/lib/validators";
+import toast from "react-hot-toast";
 
 const AuthPage = () => {
 
@@ -19,11 +20,9 @@ const AuthPage = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confPassword, setConfPassword] = useState<string>("");
-  const [error, setError] = useState<string>("");
   const [mode, setMode] = useState<"login" | "signup">(initialMode);
 
   const handleLogin = async () => {
-    setError("");
 
     const res = await fetch("api/auth/login", {
       method: "POST",
@@ -34,7 +33,7 @@ const AuthPage = () => {
     const data = await res.json();
 
     if(!res.ok){
-      setError(data.message || "Login Failed");
+      toast.error("Login Failed");
       return;
     }
 
@@ -42,15 +41,14 @@ const AuthPage = () => {
   };
 
   const handleSignup = async () => {
-    setError("");
 
     if(!isStrongPassword(password)) {
-      setError("Password must be 8 characters long");
+      toast.error("Password must be 8 characters long");
       return;
     }
 
     if(!isValidEmail(email)){
-      setError("Email id invalid");
+      toast.error("Invalid email id detected");
       return;
     }
 
@@ -63,7 +61,7 @@ const AuthPage = () => {
     const data = await res.json();
 
     if(!res.ok){
-      setError(data.message || "Sign-up Failed");
+      toast.error("Sign-up Failed");
       return;
     }
 

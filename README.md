@@ -1,6 +1,6 @@
 # Graphic Editor v1
 
-A web-based graphic editor built using Fabric.js and the MERN stack, focused on structured canvas manipulation, save and export, undo/redo logic, and full-stack extensibility.
+A web-based graphic editor built using Fabric.js and the Next.js serverless architecture, focused on structured canvas manipulation, save and export, undo/redo logic, and full-stack extensibility.
 
 ## Tech Stack
 

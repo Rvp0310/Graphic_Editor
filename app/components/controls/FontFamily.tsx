@@ -13,18 +13,38 @@ const fonts = [
   "Comic Sans MS",
 ];
 
-const FontDropdown = ({selectedObject, canvas, saveState}: { selectedObject: IText; canvas: Canvas | null; saveState: () => void; }) => {
-    if (!selectedObject || !canvas) return null;
-    const [font, setFont] = useState<string>("Arial");
+const FontDropdown = ({
+  selectedObject,
+  canvas,
+  saveState,
+}: {
+  selectedObject: IText;
+  canvas: Canvas | null;
+  saveState: () => void;
+}) => {
+  if (!selectedObject || !canvas) return null;
+  const [font, setFont] = useState<string>("Arial");
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newFont = e.target.value;
-    setFont(newFont);
-      selectedObject.set({ fontFamily: newFont });
-      canvas?.requestRenderAll();
 
-      saveState();
+    const hasSelection =
+      selectedObject.isEditing &&
+      selectedObject.selectionStart != null &&
+      selectedObject.selectionEnd != null &&
+      selectedObject.selectionStart != selectedObject.selectionEnd;
+
+    if (hasSelection) {
+      selectedObject.setSelectionStyles({ fontFamily: newFont });
+    } else {
+      selectedObject.set({ fontFamily: newFont });
     }
+    setFont(newFont);
+
+    canvas?.requestRenderAll();
+
+    saveState();
+  };
 
   return (
     <div className="algnLabel">

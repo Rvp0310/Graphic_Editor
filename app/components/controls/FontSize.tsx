@@ -7,7 +7,17 @@ const FontSize = ({selectedObject, canvas, saveState}: { selectedObject: IText; 
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newSize = +e.target.value;
-        selectedObject.set({ fontSize: newSize });
+
+        const hasSelection = selectedObject.isEditing && selectedObject.selectionStart != null &&
+        selectedObject.selectionEnd != null &&
+        selectedObject.selectionStart != selectedObject.selectionEnd
+
+        if(hasSelection){
+        selectedObject.setSelectionStyles({ fontSize: newSize });
+        } else {
+            selectedObject.set({ fontSize: newSize });
+        }
+
         setFontSize(newSize);
         selectedObject.setCoords();
         canvas.requestRenderAll();

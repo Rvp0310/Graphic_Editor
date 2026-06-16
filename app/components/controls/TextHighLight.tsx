@@ -12,7 +12,17 @@ const TextHighLight = ({selectedObject, canvas, saveState}: { selectedObject: IT
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setHighlight(e.target.value);
-      selectedObject.set({backgroundColor: e.target.value});
+
+      const hasSelection = selectedObject.isEditing && selectedObject.selectionStart != null &&
+        selectedObject.selectionEnd != null &&
+        selectedObject.selectionStart != selectedObject.selectionEnd
+
+        if(hasSelection){
+          selectedObject.setSelectionStyles({backgroundColor: e.target.value});
+        } else {
+          selectedObject.set({backgroundColor: e.target.value});
+        }
+      
       canvas.renderAll();
     }
 

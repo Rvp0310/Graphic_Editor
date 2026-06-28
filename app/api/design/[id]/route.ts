@@ -42,7 +42,7 @@ export const PUT = async (
   try{
     await connectDB();
 
-    const {canvas, thumbnail}: {canvas: Object, thumbnail: string} = await req.json();
+    const {content, thumbnail}: {content: Object, thumbnail: string} = await req.json();
 
     const {id} = await context.params;
     const user = await getUserFromToken(req);
@@ -53,7 +53,7 @@ export const PUT = async (
 
     const updateFields: any = {};
 
-    if (canvas) updateFields.canvas = canvas;
+    if (content) updateFields.content = content;
 
     if (thumbnail) updateFields.thumbnail = thumbnail
 

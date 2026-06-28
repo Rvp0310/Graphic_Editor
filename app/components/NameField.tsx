@@ -1,12 +1,17 @@
+"use client";
+
 import React, { useState } from "react";
 import TextField from "@mui/material/TextField";
 import { Button } from "@mui/material";
 import toast from 'react-hot-toast';
 import { Canvas } from "fabric";
 import { useAuth } from "../context/AuthContext";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
+import { Slide } from "../lib/type";
 
-const NameField = ({ canvas, setDisplay }: { canvas: Canvas | null, setDisplay: React.Dispatch<React.SetStateAction<boolean>> }) => {
+
+const NameField = ({ canvas, slides, setDisplay }: { canvas: Canvas | null, slides: Slide[], setDisplay: React.Dispatch<React.SetStateAction<boolean>> }) => {
+  const pathname = usePathname();
   const {user} = useAuth();
   const router = useRouter();
 
@@ -15,15 +20,36 @@ const NameField = ({ canvas, setDisplay }: { canvas: Canvas | null, setDisplay: 
   const [name, setName] = useState<string>("Untitled Design");
 
   const handleSave = async() => {
+      const type =
+      pathname.includes("presentation")
+        ? "presentation"
+        : "whiteboard";
+
         if (!canvas) return;
 
-        const thumbnail = canvas.toDataURL({
+        const tempCanvas = new Canvas();
+        if (type === "presentation"){
+          await tempCanvas.loadFromJSON(slides[0].canvasData);
+        }
+
+        const thumbnail = 
+        type === "presentation"
+          ? tempCanvas.toDataURL({
+          format: "png",
+          quality: 0.6, // lower = lighter
+          multiplier: 0.05, // scales down = thumbnail size
+        })
+        :
+          canvas.toDataURL({
           format: "png",
           quality: 0.6, // lower = lighter
           multiplier: 0.25, // scales down = thumbnail size
         });
 
-        const canvasJSON = canvas.toJSON();
+        const content =
+        type === "presentation"
+          ? slides
+          : canvas.toJSON();
 
         try{
             const res = await fetch('/api/design/save', {
@@ -34,7 +60,8 @@ const NameField = ({ canvas, setDisplay }: { canvas: Canvas | null, setDisplay: 
                 body: JSON.stringify({
                     userId: user.id,
                     name: name,
-                    canvas: canvasJSON,
+                    type: type,
+                    content: content,
                     thumbnail: thumbnail
                 })
             });
@@ -50,7 +77,7 @@ const NameField = ({ canvas, setDisplay }: { canvas: Canvas | null, setDisplay: 
 
             const designId = data.design._id;
             if (data?.design?._id) {
-              router.push(`/editor/${data.design._id}`);
+              router.push(`/editor/${type}/${data.design._id}`);
             } else {
               toast.error("Something went sideways while redirecting");
             }

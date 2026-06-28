@@ -7,7 +7,11 @@ import { Canvas, Rect, Circle, Triangle, Line } from "fabric";
 
 const shapes = ["Rectangle", "Triangle", "Circle", "Line"] as const;
 
-const AddShape = ({ canvas }: { canvas: Canvas | null }) => {
+const AddShape = ({
+  canvas
+}: {
+  canvas: Canvas | null;
+}) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [activeTool, setActiveTool] = useState<
     "select" | "Rectangle" | "Triangle" | "Circle" | "Line"
@@ -23,7 +27,7 @@ const AddShape = ({ canvas }: { canvas: Canvas | null }) => {
   };
 
   const drawShape = (
-    selected: "Rectangle" | "Triangle" | "Circle" | "Line"
+    selected: "Rectangle" | "Triangle" | "Circle" | "Line",
   ) => {
     if (!canvas) return;
 
@@ -73,14 +77,12 @@ const AddShape = ({ canvas }: { canvas: Canvas | null }) => {
           });
           break;
         case "Line":
-          shape = new Line(
-            [startX, startY, startX, startY],
-          {
+          shape = new Line([startX, startY, startX, startY], {
             stroke: "#14116b",
             strokeWidth: 2,
             selectable: false,
             evented: false,
-            strokeUniform: true, 
+            strokeUniform: true,
             originX: "center",
             originY: "center",
           });
@@ -97,10 +99,10 @@ const AddShape = ({ canvas }: { canvas: Canvas | null }) => {
 
       if (shape instanceof Line) {
         shape.set({
-            x1: startX,
-            y1: startY,
-            x2: pointer.x,
-            y2: pointer.y
+          x1: startX,
+          y1: startY,
+          x2: pointer.x,
+          y2: pointer.y,
         });
       } else if (shape instanceof Circle) {
         const radius =
@@ -162,17 +164,15 @@ const AddShape = ({ canvas }: { canvas: Canvas | null }) => {
         open={open}
         onClose={handleClose}
         anchorOrigin={{
-          vertical: "top",
-          horizontal: "center",
-        }}
+                vertical: "top",
+                horizontal: "right",
+              }
+        }
         transformOrigin={{
-          vertical: "bottom",
-          horizontal: "center",
-        }}
-        sx={{
-          borderRadius: 2,
-          minWidth: 140,
-        }}
+                vertical: "bottom",
+                horizontal: "right",
+              }
+        }
       >
         {shapes.map((shape) => (
           <MenuItem

@@ -2,7 +2,7 @@
 
 import ShapeFormatPannel from '@/app/components/ShapeFormatPannel';
 import TextFormatPannel from '@/app/components/TextFormatPannel';
-import WhiteboardEditMenu from '@/app/components/WhiteboardEditMenu'
+import EditMenu from '@/app/components/WhiteboardEditMenu'
 import { Canvas, FabricObject, IText } from 'fabric';
 import React, {useEffect, useRef, useState} from 'react'
 
@@ -169,7 +169,7 @@ const Whiteboard = () => {
     }
     <div id = "whiteboardCanvas" ref={containerRef}>
       <canvas ref={canvasRef} />
-      {canvas && <WhiteboardEditMenu canvas = {canvas} undo={undo} redo={redo} saveState={saveState}/>}
+      {canvas && <EditMenu canvas = {canvas} undo={undo} redo={redo} saveState={saveState}/>}
     </div>
     </>
   )

@@ -6,7 +6,7 @@ import CardActionArea from '@mui/material/CardActionArea';
 import { DesignType } from './DesignSpace';
 import SavedDesignOptions from './SavedDesignOptions';
 
-export default function SavedDesign({_id, name, thumbnail, updatedAt, fetchDesigns, onClick}: DesignType) {
+export default function SavedDesign({_id, name, type, thumbnail, updatedAt, fetchDesigns, onClick}: DesignType) {
   return (
     <Card sx={{ minWidth: "70%" }}>
       <CardActionArea sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
@@ -20,6 +20,9 @@ export default function SavedDesign({_id, name, thumbnail, updatedAt, fetchDesig
         <CardContent onClick={onClick}>
           <Typography gutterBottom variant="h5" component="div">
             {name || "placeholder"}
+          </Typography>
+          <Typography gutterBottom variant="h6" component="div">
+            {type || "placeholder"}
           </Typography>
           { updatedAt &&
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>

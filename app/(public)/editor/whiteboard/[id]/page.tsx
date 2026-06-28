@@ -123,13 +123,13 @@ const Whiteboard = () => {
   }, [id]);
 
   useEffect(() => {
-  if (!canvas || !design?.canvas) return;
+  if (!canvas || !design?.content) return;
 
   isRestoringRef.current = true;
   
-  console.log("DESIGN CANVAS:", design.canvas);
+  console.log("DESIGN CANVAS:", design.content);
 
-  canvas.loadFromJSON(design.canvas, () => {
+  canvas.loadFromJSON(design.content, () => {
     canvas.requestRenderAll();
 
     canvas.discardActiveObject();

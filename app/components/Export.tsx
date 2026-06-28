@@ -5,11 +5,64 @@ import { Canvas } from 'fabric';
 import toast from 'react-hot-toast';
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import { DataArrayOutlined } from '@mui/icons-material';
+import jsPDF from "jspdf";
+import { usePathname } from 'next/navigation';
+import { Slide } from '../lib/type';
 
-const types = ["jpeg", "png"] as const;
+const Export = ({ canvas, slides }: { canvas: Canvas | null; slides: Slide[] }) => {
+    const pathname = usePathname();
 
-const Export = ({ canvas }: { canvas: Canvas | null }) => {
+    const isPresentation = pathname.includes("presentation");
+
+    const exportTypes = isPresentation
+  ? (["pdf"] as const)
+  : (["jpeg", "png"] as const);
+
+  const exportPDF = async () => {
+  const pdf = new jsPDF({
+    orientation: "landscape",
+    unit: "px",
+    format: [960, 540],
+  });
+
+  for (let i = 0; i < slides.length; i++) {
+    const tempCanvas = new Canvas(document.createElement("canvas"), {
+      width: 960,
+      height: 540,
+    });
+
+    console.log(slides[i].canvasData);
+    console.log(slides[i].canvasData.objects);
+
+    await new Promise<void>((resolve) => {
+      tempCanvas.loadFromJSON(slides[i].canvasData, () => {
+        tempCanvas.renderAll();
+
+        requestAnimationFrame(() => {
+          resolve();
+        });
+      });
+    });
+
+    const image = tempCanvas.toDataURL({
+      format: "png",
+      multiplier: 2,
+    });
+
+    if (i > 0) {
+      pdf.addPage();
+    }
+
+    pdf.addImage(image, "PNG", 0, 0, 960, 540);
+
+    tempCanvas.dispose();
+  }
+
+  pdf.save("presentation.pdf");
+
+  toast.success("Exported as PDF");
+};
+
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [activeTool, setActiveTool] = useState<
       "select" | "png" | "jpg"
@@ -68,10 +121,17 @@ const Export = ({ canvas }: { canvas: Canvas | null }) => {
           minWidth: 140,
         }}
       >
-        {types.map((type) => (
+        {exportTypes.map((type) => (
           <MenuItem
             key={type}
-            onClick={() => {
+            onClick={async () => {
+
+              if (type === "pdf") {
+                await exportPDF();
+                handleClose();
+                return;
+              }
+
               if (!canvas) return;
 
               const dataURL = canvas.toDataURL({

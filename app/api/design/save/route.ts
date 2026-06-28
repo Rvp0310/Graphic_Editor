@@ -7,7 +7,7 @@ export const POST = async (req: NextRequest) => {
     try{
         await connectDB();
 
-        const {userId, name, canvas, thumbnail}: {userId: string, name: string, canvas: Object, thumbnail: string} = await req.json()
+        const {userId, name, type, content, thumbnail}: {userId: string, name: string, type: string, content: Object, thumbnail: string} = await req.json()
         const existing = await Design.find({
             userId,
             name: { $regex: `^${name}( \\(\\d+\\))?$` }
@@ -22,7 +22,8 @@ export const POST = async (req: NextRequest) => {
         const design = await Design.create({
             userId,
             name: finalName,
-            canvas,
+            type,
+            content,
             thumbnail
         });
 
@@ -44,7 +45,7 @@ export const GET = async (req: NextRequest) => {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
         
-        const designs = await Design.find({userId: user._id}).select("name thumbnail updatedAt").sort({ updatedAt: -1 });
+        const designs = await Design.find({userId: user._id}).select("name type thumbnail updatedAt").sort({ updatedAt: -1 });
         console.log(designs);
         return NextResponse.json({ designs }, { status: 200 });
     } catch (err) {

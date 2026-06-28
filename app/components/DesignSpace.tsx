@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';
 export type DesignType = {
   _id: string;
   name: string;
+  type: string;
   thumbnail: string;
   updatedAt: string;
   fetchDesigns: () => void;
@@ -55,13 +56,14 @@ const DesignSpace = ({user}: { user: UserType; }) => {
           key={design._id}
           _id={design._id}
           name={design.name}
+          type={design.type}
           thumbnail={design.thumbnail}
           updatedAt={design.updatedAt}
           fetchDesigns = {fetchDesigns}
           onClick={() => {
             // navigate to editor
           
-            router.push(`/editor/${design._id}`);
+            router.push(`/editor/${design.type}/${design._id}`);
           }}
         />
       ))}

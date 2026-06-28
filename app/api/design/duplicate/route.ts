@@ -36,7 +36,8 @@ export const POST = async (req: NextRequest) => {
     const duplicated = await Design.create({
       userId: user._id,
       name: finalName,
-      canvas: original.canvas,
+      type: original.type,
+      content: original.content,
       thumbnail: original.thumbnail,
     });
 
